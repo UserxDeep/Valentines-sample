@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Will You Be My Valentine? ❤️</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a0f2e, #4a1a3d);
+      color: white;
+      overflow-x: hidden; /* Allow vertical scroll if needed on small screens */
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .page {
+      display: none;
+      transition: all 0.8s ease;
+    }
+    .page.active {
+      display: flex;
+      animation: fadeIn 1s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .heart {
+      position: absolute;
+      font-size: 28px;
+      color: #ff4d94;
+      animation: floatHeart 10s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes floatHeart {
+      0%   { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100vh) rotate(720deg); }
+    }
+    .gift-card {
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .gift-card:hover {
+      transform: scale(1.08) rotate(2deg);
+    }
+    .no-btn {
+      transition: all 0.25s ease-out;
+    }
+    .quiz-option {
+      transition: all 0.2s;
+    }
+    .quiz-option:hover {
+      background: rgba(255, 105, 180, 0.2);
+    }
+    /* Enhanced photo styling for Gift 3 */
+    .photo-frame {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 105, 180, 0.3);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(255, 105, 180, 0.1);
+    }
+    .photo-frame:hover {
+      transform: scale(1.02);
+    }
+    #gift3 {
+      background: linear-gradient(to bottom, rgba(26,15,46,0.8), rgba(74,26,61,0.9));
+    }
+    /* Music button pulse animation */
+    @keyframes pulse-music {
+      0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="min-h-screen relative flex items-center justify-center">
+
+  <!-- Floating Hearts -->
+  <div id="hearts" class="absolute inset-0 pointer-events-none"></div>
+
+  <!-- Music Toggle Button -->
+  <button id="music-toggle" onclick="toggleMusic()" class="fixed top-6 right-6 z-50 bg-white/10 backdrop-blur-md p-4 rounded-full border border-pink-300/30 text-pink-300 hover:bg-pink-500 hover:text-white transition-all shadow-lg">
+    <i class="fas fa-music"></i>
+  </button>
+
+  <!-- Page 1: Proposal -->
+  <div id="page-proposal" class="page active flex-col items-center text-center p-6 max-w-lg z-10">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4 text-pink-300">My Dearest ❤️</h1>
+    <div class="bg-white/10 backdrop-blur-xl p-6 md:p-10 rounded-3xl border border-pink-400/30 w-full">
+      <i class="fa-solid fa-envelope text-6xl md:text-8xl text-pink-400 mb-6"></i>
+      <p class="text-xl md:text-3xl font-semibold mb-8">Will you be my Valentine?</p>
+      
+      <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-8 relative">
+        <button onclick="sayYes()" class="bg-pink-500 hover:bg-pink-600 px-8 py-4 md:px-16 md:py-6 rounded-3xl text-xl md:text-3xl font-bold transition-all w-full md:w-auto">YES! ❤️</button>
+        <button id="noBtn" onclick="sayNo()" class="no-btn bg-gray-700 hover:bg-gray-600 px-8 py-4 md:px-12 md:py-6 rounded-3xl text-xl md:text-3xl font-bold transition-all w-full md:w-auto">No</button>
+      </div>
+    </div>
+
+    <!-- No reaction message -->
+    <div id="no-message-container" class="hidden mt-10 text-center">
+      <p id="no-message" class="text-3xl font-bold text-pink-200 drop-shadow-md animate-pulse"></p>
+    </div>
+  </div>
+
+  <!-- Page 2: Yes + See My Gift -->
+  <div id="page-yes" class="page flex-col items-center text-center p-6 z-10">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6 text-pink-300">Yay! I knew it! 🥹❤️</h1>
+    <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWVkbHlvNTVmOXN3ZjZuZno3NHVjMDIyeXV1c2loOXBrbjAycjJ1MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MeIucAjPKoA120R7sN/giphy.gif" class="w-64 md:w-80 rounded-3xl mb-8" alt="happy">
+    <p class="text-lg md:text-2xl max-w-md mb-8 md:mb-12">You just made my entire year. Thank you for being my everything.</p>
+    <button onclick="showGifts()" class="bg-gradient-to-r from-pink-500 to-purple-500 px-10 py-5 md:px-16 md:py-7 rounded-3xl text-xl md:text-3xl font-bold hover:scale-105 transition-all">See My Gift 🎁</button>
+  </div>
+
+  <!-- Page 3: Gifts Hub -->
+  <div id="page-gifts" class="page flex-col items-center p-6 z-10">
+    <h1 class="text-3xl md:text-5xl font-bold mb-8 md:mb-12">Choose Your Gift ❤️</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-5xl w-full">
+      <div onclick="showGift(1)" class="gift-card bg-white/10 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-pink-400/30 cursor-pointer text-center">
+        <div class="text-6xl mb-4">🧠</div>
+        <h3 class="text-2xl md:text-3xl font-bold mb-2">Gift 1</h3>
+        <p class="text-lg md:text-xl">Love Quiz</p>
+      </div>
+      <div onclick="showGift(2)" class="gift-card bg-white/10 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-pink-400/30 cursor-pointer text-center">
+        <div class="text-6xl mb-4">📜</div>
+        <h3 class="text-2xl md:text-3xl font-bold mb-2">Gift 2</h3>
+        <p class="text-lg md:text-xl">My Letter</p>
+      </div>
+      <div onclick="showGift(3)" class="gift-card bg-white/10 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-pink-400/30 cursor-pointer text-center">
+        <div class="text-6xl mb-4">📸</div>
+        <h3 class="text-2xl md:text-3xl font-bold mb-2">Gift 3</h3>
+        <p class="text-lg md:text-xl">Our Photos</p>
+      </div>
+    </div>
+    <button onclick="showFinalVideo()" class="mt-8 md:mt-12 bg-gradient-to-r from-rose-500 to-pink-600 px-8 py-5 md:px-16 md:py-7 rounded-3xl text-xl md:text-3xl font-bold hover:scale-105 transition-all">Final message</button>
+    <button onclick="goBackToYes()" class="mt-6 text-pink-300 underline">← Back</button>
+  </div>
+
+  <!-- Gift 1: Quiz -->
+  <div id="gift1" class="page flex-col items-center p-6 max-w-lg z-10">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">How Well Do You Know Us? ❤️</h2>
+    <div id="quiz-container" class="w-full bg-white/10 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-pink-400/30"></div>
+    <button onclick="showGifts()" class="mt-6 text-pink-300 underline">← Back to Gifts</button>
+  </div>
+
+  <!-- Gift 2: Letter -->
+  <div id="gift2" class="page flex-col items-center p-6 max-w-3xl z-10">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">My Letter to You 💌</h2>
+    <div class="bg-white/10 backdrop-blur-xl p-6 md:p-10 rounded-3xl border border-pink-400/30 text-base md:text-lg leading-relaxed whitespace-pre-wrap">
+Give me your bad days, give me your good days. Give me your happy and give me your sad. I want to love you, all of you. Don't just give me your smile, give me your tears as well. Don't just tell me your dreams and what drives you, tell me your nightmares and the things that hold you back.
+Give me your body, but also show me your scars. I'm not just here to hold your hand, I'm also here to understand.
+I'll pick you up, I'll brace your fall. Don't just let me walk beside you in the sunshine, let me hold you through the storm. Give me all of you, let me love you true, every single piece that makes you, you.
+    </div>
+    <button onclick="showGifts()" class="mt-10 bg-pink-500 px-8 py-4 md:px-12 md:py-6 rounded-3xl text-lg md:text-xl">Back to Gifts</button>
+  </div>
+
+  <!-- Gift 3: Photos -->
+  <div id="gift3" class="page flex-col items-center p-6 overflow-y-auto z-10 fixed inset-0 w-full h-full">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">Look here cutiee 📸❤️</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-4xl mx-auto">
+      <img src="photo1.webp" class="w-full h-48 md:h-64 rounded-3xl shadow-2xl object-cover hover:scale-[1.02] transition-transform duration-500" alt="Memory 1">
+      <img src="photo2.webp" class="w-full h-48 md:h-64 rounded-3xl shadow-2xl object-cover hover:scale-[1.02] transition-transform duration-500" alt="Memory 2">
+      <img src="photo3.webp" class="w-full h-48 md:h-64 rounded-3xl shadow-2xl object-cover hover:scale-[1.02] transition-transform duration-500" alt="Memory 3">
+      <img src="photo4.webp" class="w-full h-48 md:h-64 rounded-3xl shadow-2xl object-cover hover:scale-[1.02] transition-transform duration-500" alt="Memory 4">
+      <img src="photo5.webp" class="w-full h-48 md:h-64 rounded-3xl shadow-2xl object-cover hover:scale-[1.02] transition-transform duration-500" alt="Memory 5">
+      <img src="photo6.webp" class="w-full h-48 md:h-64 rounded-3xl shadow-2xl object-cover hover:scale-[1.02] transition-transform duration-500" alt="Memory 6">
+    </div>
+    <button onclick="showGifts()" class="mt-10 md:mt-16 bg-gradient-to-r from-pink-500 to-rose-600 px-10 py-5 md:px-16 md:py-7 rounded-3xl text-xl md:text-2xl font-bold hover:scale-105 transition-all">Back to Gifts</button>
+  </div>
+
+  <!-- Final Video Page -->
+  <div id="final-video" class="page flex-col items-center p-6 z-10 fixed inset-0 w-full h-full overflow-y-auto">
+    <h1 class="text-3xl md:text-5xl font-bold mb-8 text-pink-300 text-center">You are my forever🧿❤️!</h1>
+    <video controls class="w-full max-w-sm rounded-3xl shadow-[0_0_50px_rgba(236,72,153,0.5)] border-8 border-pink-200 ring-4 ring-pink-500 mb-8" src="VIDEO.mp4"></video>
+    <p class="text-base md:text-lg max-w-2xl text-center leading-relaxed">
+      My Maalkin, I just wanted to write this to tell you how much I love you and how happy you make me. You are the best thing that has ever happened to me, and seeing your smile is the best part of my day. I feel so lucky that I get to be with you, and I promise to always take care of your heart and make you feel special. Thank you for being my girl and my love; I care about you more than words can say. 🫶🏻
+    </p>
+    <button onclick="restartAll()" class="mt-12 text-pink-300 underline text-xl">Restart Experience</button>
+  </div>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const noMessages = [
+      "Please...? 🥺",
+      "Why not? 😢",
+      "Come onnn... 🥹",
+      "You're breaking my heart 💔",
+      "Okay... but think again? 😭",
+      "Fine... I guess I'll cry now 😔"
+    ];
+
+    let gifIndex = 0;
+
+    // ────────────────────────────────────────────────
+    // Floating hearts
+    // ────────────────────────────────────────────────
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 8 + 8) + 's';
+      document.getElementById('hearts').appendChild(heart);
+      setTimeout(() => heart.remove(), 20000);
+    }
+    setInterval(createHeart, 280);
+    for (let i = 0; i < 12; i++) createHeart();
+
+    // ────────────────────────────────────────────────
+    // Page navigation
+    // ────────────────────────────────────────────────
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    // ────────────────────────────────────────────────
+    // "No" button – run away + change GIF + message
+    // ────────────────────────────────────────────────
+    function sayNo() {
+      const noBtn = document.getElementById('noBtn');
+      const msgContainer = document.getElementById('no-message-container');
+      const messageEl = document.getElementById('no-message');
+
+      // Show container
+      msgContainer.classList.remove('hidden');
+      messageEl.textContent = noMessages[gifIndex % noMessages.length];
+      gifIndex++;
+
+      // Move button (stay inside visible area)
+      const padding = 40;
+      const maxX = window.innerWidth  - noBtn.offsetWidth  - padding * 2;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding * 3; // more space at top
+      const x = padding + Math.random() * maxX;
+      const y = padding + Math.random() * maxY;
+
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
+
+      // Small bounce effect
+      noBtn.style.transform = 'scale(1.12)';
+      setTimeout(() => { noBtn.style.transform = 'scale(1)'; }, 180);
+    }
+
+    function sayYes() {
+      showPage('page-yes');
+      const audio = document.getElementById('bgMusic');
+      audio.currentTime = 40;
+      audio.play().then(() => {
+        document.getElementById('music-toggle').innerHTML = '<i class="fas fa-pause"></i>';
+        document.getElementById('music-toggle').style.animation = 'pulse-music 2s infinite';
+      }).catch((e) => console.log("Audio play failed (check if music.mp3 exists):", e));
+    }
+
+    function showGifts() {
+      showPage('page-gifts');
+    }
+
+    function goBackToYes() {
+      showPage('page-yes');
+    }
+
+    function showGift(n) {
+      showPage('gift' + n);
+      if (n === 1) loadQuiz();
+    }
+
+    // ────────────────────────────────────────────────
+    // Quiz
+    // ────────────────────────────────────────────────
+    const quizQuestions = [
+      {
+        q: "Who is the absolute “Boss” in our relationship?",
+        options: ["Obviously you", "Me", "you"],
+        ans: 0
+      },
+      {
+        q: "Who fights a lot in our relationship?",
+        options: ["You", "No one", "Me"],
+        ans: 2
+      },
+      {
+        q: "Where do I plan to spend the rest of my life?",
+        options: ["Paris", "In your heart", "On mars"],
+        ans: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+
+    function loadQuiz() {
+      currentQuestion = 0;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const container = document.getElementById('quiz-container');
+      const q = quizQuestions[currentQuestion];
+      let html = `<p class="text-xl md:text-2xl mb-6">${q.q}</p>`;
+      q.options.forEach((opt, i) => {
+        html += `<button onclick="answer(${i})" class="quiz-option block w-full mb-4 bg-white/5 hover:bg-pink-500/20 p-4 md:p-6 rounded-2xl text-left text-lg md:text-xl transition-all border border-pink-400/20">${opt}</button>`;
+      });
+      html += `<p id="quiz-feedback" class="text-xl mt-6 min-h-[2rem]"></p>`;
+      container.innerHTML = html;
+    }
+
+    function answer(selected) {
+      const feedback = document.getElementById('quiz-feedback');
+      const correct = quizQuestions[currentQuestion].ans;
+
+      if (selected === correct) {
+        feedback.innerHTML = '<span class="text-green-400">Correct! ❤️</span>';
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizQuestions.length) {
+            renderQuestion();
+          } else {
+            document.getElementById('quiz-container').innerHTML = `
+              <h3 class="text-4xl font-bold mb-6 text-center">Yayyyyy!! You passed the test🫶🏻</h3>
+              <button onclick="showGifts()" class="mt-8 bg-pink-500 px-12 py-6 rounded-3xl text-xl mx-auto block">Back to Gifts</button>
+            `;
+          }
+        }, 1200);
+      } else {
+        feedback.innerHTML = '<span class="text-red-400">Oops! Wrong answer, try again</span>';
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // Final video
+    // ────────────────────────────────────────────────
+    function showFinalVideo() {
+      showPage('final-video');
+
+      // Stop background music
+      const audio = document.getElementById('bgMusic');
+      audio.pause();
+      const btn = document.getElementById('music-toggle');
+      btn.innerHTML = '<i class="fas fa-music"></i>';
+      btn.style.animation = 'none';
+
+      const video = document.querySelector('#final-video video');
+      video.play().catch(() => {});
+    }
+
+    function restartAll() {
+      location.reload();
+    }
+
+    // ────────────────────────────────────────────────
+    // Music Control
+    // ────────────────────────────────────────────────
+    function toggleMusic() {
+      const audio = document.getElementById('bgMusic');
+      const btn = document.getElementById('music-toggle');
+      if (audio.paused) {
+        audio.play();
+        btn.innerHTML = '<i class="fas fa-pause"></i>';
+        btn.style.animation = 'pulse-music 2s infinite';
+      } else {
+        audio.pause();
+        btn.innerHTML = '<i class="fas fa-music"></i>';
+        btn.style.animation = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
